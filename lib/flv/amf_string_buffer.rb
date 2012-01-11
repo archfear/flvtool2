@@ -40,7 +40,7 @@ class AMFStringBuffer
     rt
   end
   
-  def readchar
+  def readbyte
     read(1).unpack('C').first
   end
   
@@ -213,7 +213,7 @@ class AMFStringBuffer
     write__UI8 3
     
     object.instance_variables.each do |variable|
-      write__AMF_key variable.gsub('@', '')
+      write__AMF_key variable.to_s.gsub('@', '')
       write__AMF_data object.instance_variable_get( variable.intern )
     end
     
@@ -224,19 +224,19 @@ class AMFStringBuffer
   # FIXME: This methods are copied from flv_stream.rb. Should get in here per
   # include? or something like this.
   def read__UI8
-    readchar
+    readbyte
   end
   
   def read__UI16
-    (readchar << 8) + readchar
+    (readbyte << 8) + readbyte
   end
   
   def read__UI24
-    (readchar << 16) + (readchar << 8) + readchar
+    (readbyte << 16) + (readbyte << 8) + readbyte
   end
   
   def read__UI32
-    (readchar << 24) + (readchar << 16) + (readchar << 8) + readchar
+    (readbyte << 24) + (readbyte << 16) + (readbyte << 8) + readbyte
   end
   
   def read__STRING(length)

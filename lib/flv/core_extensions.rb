@@ -63,27 +63,28 @@ end
 class IO
   def read__UI8(position = nil)
     seek position unless position.nil?
-    readchar
+    readbyte
   end
   
   def read__UI16(position = nil)
     seek position unless position.nil?
-    (readchar << 8) + readchar
+    (readbyte << 8) + readbyte
   end
   
   def read__UI24(position = nil)
     seek position unless position.nil?
-    (readchar << 16) + (readchar << 8) + readchar
+    (readbyte << 16) + (readbyte << 8) + readbyte
   end
   
   def read__UI32(position = nil)
     seek position unless position.nil?
-    (readchar << 24) + (readchar << 16) + (readchar << 8) + readchar
+    (readbyte << 24) + (readbyte << 16) + (readbyte << 8) + readbyte
   end
   
   def read__STRING(length, position = nil)
     seek position unless position.nil?
-    read length
+    string = read length
+    string.to_s
   end
   
   
@@ -111,8 +112,8 @@ class IO
 end
 
 class ARGFWrapper
-  def readchar
-    ARGF.readchar
+  def readbyte
+    ARGF.readbyte
   end
   
   def read(length)
@@ -120,19 +121,19 @@ class ARGFWrapper
   end
   
   def read__UI8
-    readchar
+    readbyte
   end
   
   def read__UI16
-    (readchar << 8) + readchar
+    (readbyte << 8) + readbyte
   end
   
   def read__UI24
-    (readchar << 16) + (readchar << 8) + readchar
+    (readbyte << 16) + (readbyte << 8) + readbyte
   end
   
   def read__UI32
-    (readchar << 24) + (readchar << 16) + (readchar << 8) + readchar
+    (readbyte << 24) + (readbyte << 16) + (readbyte << 8) + readbyte
   end
   
   def read__STRING(length)
