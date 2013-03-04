@@ -45,9 +45,9 @@ module FLV
       @byte_offset = nil
       
       unless stream.nil?
-        data_size = stream.read__UI24
-        @timestamp = stream.read__UI24
-        stream.read__UI32
+        data_size = IOUtils.read__UI24(stream)
+        @timestamp = IOUtils.read__UI24(stream)
+        IOUtils.read__UI32(stream)
         @data = stream.read(data_size)
       else
         @timestamp = 0
@@ -74,11 +74,11 @@ module FLV
     end
     
     def serialize(stream)
-      stream.write__UI8 tag_type
-      stream.write__UI24 data_size
-      stream.write__UI24 timestamp
-      stream.write__UI32 0
-      stream.write__STRING data
+      IOUtils.write__UI8(stream, tag_type)
+      IOUtils.write__UI24(stream, data_size)
+      IOUtils.write__UI24(stream, timestamp)
+      IOUtils.write__UI32(stream, 0)
+      IOUtils.write__STRING(stream, data)
     end
 
     def info

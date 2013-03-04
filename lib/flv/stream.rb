@@ -24,6 +24,7 @@
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'flv/core_extensions'
+require 'flv/io_utils'
 require 'flv/tag'
 require 'flv/audio_tag'
 require 'flv/video_tag'
@@ -388,24 +389,24 @@ module FLV
     
       def read_header
         begin
-          @signature = @in_stream.read__STRING(3)
+          @signature = IOUtils.read__STRING(@in_stream, 3)
           log "File signature: #{@signature}"
           raise(FLVStreamError, 'IO is not a FLV stream. Wrong signature.') if @signature != 'FLV'
           
-          @version = @in_stream.read__UI8
+          @version = IOUtils.read__UI8(@in_stream)
           log "File version: #{@version}"
           
-          type_flags = @in_stream.read__UI8
+          type_flags = IOUtils.read__UI8(@in_stream)
           @type_flags_audio = (type_flags & 4) == 1
           log "File has audio: #{@type_flags_audio}"
           
           @type_flags_video = (type_flags & 1) == 1
           log "File has video: #{@type_flags_video}"
           
-          @data_offset = @in_stream.read__UI32
+          @data_offset = IOUtils.read__UI32(@in_stream)
           log "File header size: #{@data_offset}"
           
-          @extra_data = @in_stream.read__STRING @data_offset - 9
+          @extra_data = IOUtils.read__STRING(@in_stream, @data_offset - 9)
           log "File header extra data: #{@extra_data}"
           
         rescue IOError => e
@@ -415,14 +416,14 @@ module FLV
       
       def write_header
         begin
-          @out_stream.write__STRING 'FLV'
-          @out_stream.write__UI8 1
+          IOUtils.write__STRING(@out_stream, 'FLV')
+          IOUtils.write__UI8(@out_stream, 1)
           type_flags = 0
           type_flags += 4 if has_audio?
           type_flags += 1 if has_video?
-          @out_stream.write__UI8 type_flags
-          @out_stream.write__UI32 9 + @extra_data.length
-          @out_stream.write__STRING @extra_data
+          IOUtils.write__UI8(@out_stream, type_flags)
+          IOUtils.write__UI32(@out_stream, 9 + @extra_data.length)
+          IOUtils.write__STRING(@out_stream, @extra_data)
         rescue IOError => e
           raise IOError, "IO Error while writing FLV header. #{e.message}", e.backtrace
         end
@@ -433,12 +434,12 @@ module FLV
         
         while true
           break if eof?
-          previous_tag_length = @in_stream.read__UI32
+          previous_tag_length = IOUtils.read__UI32(@in_stream)
           log "Previous tag length: #{previous_tag_length}"
           
           break if eof?
           log "Tag number: #{@tags.size + 1}"
-          tag_type = @in_stream.read__UI8
+          tag_type = IOUtils.read__UI8(@in_stream)
           log "Tag type: #{FLVTag.type2name(tag_type)}"
 
           break if eof?

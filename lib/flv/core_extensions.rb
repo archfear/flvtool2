@@ -60,57 +60,6 @@ class Float
   end
 end
 
-class IO
-  def read__UI8(position = nil)
-    seek position unless position.nil?
-    readbyte
-  end
-  
-  def read__UI16(position = nil)
-    seek position unless position.nil?
-    (readbyte << 8) + readbyte
-  end
-  
-  def read__UI24(position = nil)
-    seek position unless position.nil?
-    (readbyte << 16) + (readbyte << 8) + readbyte
-  end
-  
-  def read__UI32(position = nil)
-    seek position unless position.nil?
-    (readbyte << 24) + (readbyte << 16) + (readbyte << 8) + readbyte
-  end
-  
-  def read__STRING(length, position = nil)
-    seek position unless position.nil?
-    string = read length
-    string.to_s
-  end
-  
-  
-  def write__UI8(value, position = nil)
-    seek position unless position.nil?
-    write [value].pack('C')
-  end
-  
-  def write__UI24(value, position = nil)
-    seek position unless position.nil?
-    write [value >> 16].pack('c')
-    write [(value >> 8) & 0xff].pack('c')
-    write [value & 0xff].pack('c')
-  end
-  
-  def write__UI32(value, position = nil)
-    seek position unless position.nil?
-    write [value].pack('N')
-  end
-  
-  def write__STRING(string, position = nil)
-    seek position unless position.nil?
-    write string
-  end
-end
-
 class ARGFWrapper
   def readbyte
     ARGF.readbyte
