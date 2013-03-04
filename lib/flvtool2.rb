@@ -35,7 +35,7 @@ module FLVTool2
   def self.parse_arguments
     options = {}
     options[:commands] = []
-    options[:metadatacreator] = "inlet media FLVTool2 v#{PROGRAMM_VERSION.join('.')} - http://www.inlet-media.de/flvtool2"
+    options[:metadatacreator] = "inlet media FLVTool2 v#{FLVTool2::VERSION} - http://www.inlet-media.de/flvtool2"
     options[:metadata] = {}
     options[:in_path] = nil
     options[:in_pipe] = false
@@ -170,7 +170,7 @@ module FLVTool2
   end
 
   def self.show_version
-    puts "FLVTool2 #{version}"
+    puts "FLVTool2 #{FLVTool2::VERSION}"
   end
   
   def self.show_usage
